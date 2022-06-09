@@ -1,0 +1,41 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: bot-scaler
+spec:
+  schedule: 30 * * * *
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: bot-scaler
+              image: quay.io/fourat/autoshard-scaler
+              imagePullPolicy: "Always"
+              env:
+                - name: BOT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: bot-secrets
+                      key: bot_token
+                - name: K8S_NAMESPACE
+                  value: develop
+                - name: K8S_STATEFULSET
+                  value: bot
+                - name: K8S_CONTAINER
+                  value: bot
+                - name: K8S_SHARDS_PER_BOT
+                  value: "8"
+                - name: K8S_SCALEUP
+                  value: "1"
+                - name: K8S_SCALEDOWN
+                  value: "0"
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30

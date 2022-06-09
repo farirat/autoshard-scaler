@@ -1,0 +1,9 @@
+README.rst
+tests
+k8s
+.env
+
+*.pyc
+*.pyo
+*.pyd
+__pycache__
