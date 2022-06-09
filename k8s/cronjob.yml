@@ -14,7 +14,7 @@ spec:
         spec:
           containers:
             - name: bot-scaler
-              image: quay.io/fourat/autoshard-scaler:latest
+              image: fourat/autoshard-scaler:latest
               imagePullPolicy: "Always"
               env:
                 - name: BOT_TOKEN
