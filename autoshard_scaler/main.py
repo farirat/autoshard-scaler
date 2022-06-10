@@ -4,6 +4,7 @@ import yaml
 import math
 import os
 import datetime as dt
+import requests
 from kubernetes import client, config
 
 logger = logging.getLogger('main')
@@ -19,14 +20,13 @@ class Task(object):
     def run(self):
         try:
             # 1. Get discord's recommended shard count for this bot
-            # gbot = requests.get('https://discord.com/api/gateway/bot',
-            #                    headers={'Authorization': 'Bot %s' % os.getenv('BOT_TOKEN', '<BOT_TOKEN>')})
-            # logger.debug('Discord gateway response: %s', gbot.text)
-            # if gbot.status_code != 200:
-            #    raise Exception("Could not get bot information from discord: %s" % gbot.text)
-            # recommended_shards = gbot.json()['shards']
-            # logger.info('Recommended shards: %s', recommended_shards)
-            recommended_shards = 1
+            gbot = requests.get('https://discord.com/api/gateway/bot',
+                                headers={'Authorization': 'Bot %s' % os.getenv('BOT_TOKEN', '<BOT_TOKEN>')})
+            logger.debug('Discord gateway response: %s', gbot.text)
+            if gbot.status_code != 200:
+               raise Exception("Could not get bot information from discord: %s" % gbot.text)
+            recommended_shards = gbot.json()['shards']
+            logger.info('Recommended shards: %s', recommended_shards)
 
             # 2. Get k8s's StatefulSet
             if os.getenv('KUBERNETES_SERVICE_HOST'):

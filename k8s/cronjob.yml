@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: bot-scaler
 spec:
-  schedule: 30 * * * *
+  schedule: "*/10 * * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
@@ -37,5 +37,12 @@ spec:
           dnsPolicy: ClusterFirst
           restartPolicy: OnFailure
           schedulerName: default-scheduler
-          securityContext: {}
           terminationGracePeriodSeconds: 30
+          securityContext: {}
+          serviceAccountName: bot-scaler-account
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bot-scaler-account
+  namespace: develop
