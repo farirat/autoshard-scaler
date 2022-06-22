@@ -1,10 +1,11 @@
-import logging.config
 import argparse
-import yaml
+import datetime as dt
+import logging.config
 import math
 import os
-import datetime as dt
+
 import requests
+import yaml
 from kubernetes import client, config
 
 logger = logging.getLogger('main')
@@ -24,7 +25,7 @@ class Task(object):
                                 headers={'Authorization': 'Bot %s' % os.getenv('BOT_TOKEN', '<BOT_TOKEN>')})
             logger.debug('Discord gateway response: %s', gbot.text)
             if gbot.status_code != 200:
-               raise Exception("Could not get bot information from discord: %s" % gbot.text)
+                raise Exception("Could not get bot information from discord: %s" % gbot.text)
             recommended_shards = gbot.json()['shards']
             logger.info('Recommended shards: %s', recommended_shards)
 
@@ -111,7 +112,6 @@ if __name__ == '__main__':
         # Prepare to start
         task = Task(args)
         task.run()
-
     except Exception as e:
         print("Error (%s): %s", e.__class__.__name__, e)
     finally:
